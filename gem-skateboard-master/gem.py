@@ -1,44 +1,26 @@
 from gemsdk import *
 from Tkinter import *
 import time
-#from Quaternion import Quat
-#import eulerangles
 from thread import start_new_thread
 from threading import Lock
 import numpy as np
 from matplotlib import mlab
-import transformations
 import serial
 import struct
 import matplotlib.pyplot as plt
 from Quaternion2 import Quaternion2
-#from myVideoWriter import myVideoWriter
+from myVideoWriter import myVideoWriter
+import os
 
 rad2deg = (180/3.141592653589793)
 deg2rad = (3.141592653589793/180)
 workingFlag = 0
 
-master = Tk()
-#canvas_center = 250
-#w = Canvas(master, width=canvas_center * 2, height=100)
-#w.pack()
-#w2 = Canvas(master, width=canvas_center * 2, height=100)
-#w2.pack()
-#w3 = Canvas(master, width=canvas_center * 2, height=100)
-#w3.pack()
-#w4 = Canvas(master, width=canvas_center * 2, height=100)
-#w4.pack()
 def write2arduino(ser):
     ser.write(struct.pack('B'*8,255,254,100,1,1,150,150,0))
     ser.write(struct.pack('B'*8,255,254,100,1,1,150,150,0))
     ser.write(struct.pack('B'*8,255,254,100,1,1,150,150,0))
     ser.flush()
-
-
-def measures2elevation(roll,pitch,yaw):
-    Re = transformations.euler_matrix(deg2rad*0, deg2rad*(pitch-90), deg2rad*0, 'rxyz')
-    vecRot = np.matrix(Re[0:3,0:3].T) * np.matrix([1,0,0]).T
-    return rad2deg*np.arctan2(np.sqrt(vecRot[0,0]**2 + vecRot[1,0]**2), vecRot[2,0])
 
 def get_elevation(quat):
     x, y, z = np.eye(3)
@@ -67,9 +49,7 @@ def onStatusUpdate2(st):
     return 0
 
 def onCombinedData(quaternions,acceleration):
-    
-#    quat = Quat(quaternions[:4])
-    
+        
     gems_data_lock[0].acquire()
     try:
         gems_elev_data[0][gems_elev_data_counter[0]] = get_elevation(Quaternion2.from_xyzw(quaternions[:4]))
@@ -79,46 +59,18 @@ def onCombinedData(quaternions,acceleration):
             gems_elev_data_counter[0] += 1  
         else:
             print "DEBUG: Duplicate data, ignoring..."
-        #print "1) ::: " ,gems_elev_data_counter[0]
     finally:
         gems_data_lock[0].release()
 
+    gem1_data_time = time.time()
+    print >> gem_1_fd,gem1_data_time ,quaternions[:4],gems_elev_data[0][gems_elev_data_counter[0]-1]
+    gems_last_data_timestamps[0] = gem1_data_time 
+    gem_1_fd.flush()
     
-
-    gems_last_data_timestamps[0] = time.time()
-    
-    #euler_z,euler_y,euler_x = eulerangles.quat2euler(quat)
-    
-    #print quat[0],quat[1],quat[2],quat[3],euler_z,euler_y,euler_x,
-    #print "1) %.3f"%time.time(),quat.ra,quat.roll,quat.dec,acceleration[0],acceleration[1],acceleration[2] #pitch,roll,yaw
-    #print quat.ra,quat.dec,quat.roll
-    #print quaternions[:4],acceleration[:3]
-    
-    
-#    w.delete(ALL)
-#    w.create_rectangle(canvas_center, 10, canvas_center + 100 * acceleration[0], 30, fill="red")
-#    w.create_rectangle(canvas_center, 40, canvas_center + 100 * acceleration[1], 60, fill="green")
-#    w.create_rectangle(canvas_center, 70, canvas_center + 100 * acceleration[2], 90, fill="blue")
-#
-#    w2.delete(ALL)
-#    w2.create_rectangle(canvas_center, 10, canvas_center + (100.0/360.0) * (quat.ra-180), 30, fill="red")
-#    w2.create_rectangle(canvas_center, 40, canvas_center + (100.0/360.0) * (quat.roll-180), 60, fill="green")
-#    w2.create_rectangle(canvas_center, 70, canvas_center + (100.0/360.0) * quat.dec, 90, fill="blue")
-#		
-	
-    #print acceleration[0],acceleration[1],acceleration[2]
     return 0
 
 def onCombinedData2(quaternions,acceleration):
-    global ax
-#    quat = Quat(quaternions[:4])
-#    if 90 - np.abs(quat.dec) < 5:
-    #quat = Quat([0,-quat.dec,0]) * Quat(quaternions[:4])
-    #print quat.roll, quat.ra, quat.dec
-    
-    
-    
-    
+
     gems_data_lock[1].acquire()
     try:
         gems_elev_data[1][gems_elev_data_counter[1]] = get_elevation(Quaternion2.from_xyzw(quaternions[:4]))
@@ -131,27 +83,12 @@ def onCombinedData2(quaternions,acceleration):
         #print "2) ::: " ,gems_elev_data_counter[1]
     finally:
         gems_data_lock[1].release()
-    gems_last_data_timestamps[1] = time.time()
-    #euler_z,euler_y,euler_x = eulerangles.quat2euler(quat)
+        
+    gem2_data_time = time.time()
+    print >> gem_2_fd,gem2_data_time ,quaternions[:4],gems_elev_data[1][gems_elev_data_counter[1]-1]
+    gems_last_data_timestamps[1] = gem2_data_time
+    gem_2_fd.flush()
     
-    #print quat[0],quat[1],quat[2],quat[3],euler_z,euler_y,euler_x,
-    #print "2) %.3f"%time.time(),quat.ra,quat.roll,quat.dec,acceleration[0],acceleration[1],acceleration[2] #roll,pitch,yaw
-
-    #print quat.ra,quat.dec,quat.roll
-    #print quaternions[:4],acceleration[:3]
-
-#    w3.delete(ALL)
-#    w3.create_rectangle(canvas_center, 10, canvas_center + 100 * acceleration[0], 30, fill="red")
-#    w3.create_rectangle(canvas_center, 40, canvas_center + 100 * acceleration[1], 60, fill="green")
-#    w3.create_rectangle(canvas_center, 70, canvas_center + 100 * acceleration[2], 90, fill="blue")
-#
-#    w4.delete(ALL)
-#    w4.create_rectangle(canvas_center, 10, canvas_center + (100.0/360.0) * (quat.ra-180), 30, fill="red")
-#    w4.create_rectangle(canvas_center, 40, canvas_center + (100.0/360.0) * (quat.roll-180), 60, fill="green")
-#    w4.create_rectangle(canvas_center, 70, canvas_center + (100.0/360.0) * quat.dec, 90, fill="blue")
-#		
-	
-    #print acceleration[0],acceleration[1],acceleration[2]
     return 0
 
 gems = [None,None]
@@ -163,8 +100,6 @@ gems_data_lock = [Lock(),Lock()]
 
 gems_elev_data_time = [range(0,200),range(0,200)]
 
-global workingFlag
-global last_case
 workingFlag = 0
 last_case = 0
 
@@ -209,7 +144,8 @@ def main_thread_loop():
             ser.write(struct.pack('B'*8,255,254,100,1,6,150,150,0))
             ser.write(struct.pack('B'*8,255,254,100,1,6,150,150,0))
             led_tic = time.time()
-            print "sent LED"
+            print >> events_fd,time.time(),"sent LED"
+            events_fd.flush()
         if gems_elev_data_counter[0] > MAX_VECTOR_SIZE:
             gems_data_lock[0].acquire()
             try:
@@ -248,7 +184,8 @@ def main_thread_loop():
 #        print last_case,hands_trend, gems_elev_data[0][gems_elev_data_counter[0]-1],gems_elev_data[1][gems_elev_data_counter[1]-1]
         if hands_trend[0] == HAND_DOWN and hands_trend[1] == HAND_UNKWON and gems_elev_data[1][gems_elev_data_counter[1]-1] > HAND_ON_FLOOR:
             if last_case != 1:    
-                print 'CASE 1 ::: hand 1 down,hand 2 on the floor'
+                print >> events_fd,time.time(), 'CASE 1 ::: hand 1 down,hand 2 on the floor'
+                events_fd.flush()
                 write2arduino(ser)
                 workingFlag = 1
             else:
@@ -256,7 +193,8 @@ def main_thread_loop():
             last_case = 1
         elif hands_trend[1] == HAND_DOWN and hands_trend[0] == HAND_UNKWON and gems_elev_data[0][gems_elev_data_counter[0]-1] > HAND_ON_FLOOR:
             if last_case != 2:            
-                print 'CASE 2 ::: hand 2 down,hand 1 on the floor'
+                print >> events_fd,time.time(), 'CASE 2 ::: hand 2 down,hand 1 on the floor'
+                events_fd.flush()
                 write2arduino(ser)  
                 workingFlag = 2
             else:
@@ -264,7 +202,8 @@ def main_thread_loop():
             last_case = 2
         elif hands_trend[0] == HAND_UP and hands_trend[1] == HAND_UNKWON and gems_elev_data[1][gems_elev_data_counter[1]-1] > HAND_ON_FLOOR:
             if last_case != 3:          
-                print 'CASE 3 ::: hand 1 up and hand 2 floor'
+                print >> events_fd,time.time(), 'CASE 3 ::: hand 1 up and hand 2 floor'
+                events_fd.flush()
                 write2arduino(ser) 
                 workingFlag = 3
             else:
@@ -272,7 +211,8 @@ def main_thread_loop():
             last_case = 3
         elif hands_trend[1] == HAND_UP and hands_trend[0] == HAND_UNKWON and gems_elev_data[0][gems_elev_data_counter[0]-1] > HAND_ON_FLOOR:
             if last_case != 4:          
-                print 'CASE 4 ::: hand 2 up and hand 1 floor'
+                print >> events_fd,time.time(), 'CASE 4 ::: hand 2 up and hand 1 floor'
+                events_fd.flush()
                 write2arduino(ser) 
                 workingFlag = 4
             else:
@@ -335,66 +275,26 @@ def figure_thread_loop():
         plt.draw() 
             
         plt.pause(0.00001)        
-            
-#def figure_thread_loop():   
-#    global workingFlag
-#    global last_case
-#    plt.figure(1)
-#    mngr = plt.get_current_fig_manager()
-#    mngr.window.setGeometry(250,250,650, 650)
-#    plt.axis([-100, 100, 0, 180])
-#    plt.ion()    
-#    plt.figure(2)
-#    mngr = plt.get_current_fig_manager()
-#    mngr.window.setGeometry(1050,250,650, 650)    
-#    plt.axis([-100, 100, 0, 180])
-#    plt.ion()    
-#    iii = 0    
-#    lastValue0 = 0
-#    lastValue1 = 0
-#    
-#    while True:
-#        plt.figure(1)
-##        print lastValue0 , gems_elev_data[0][gems_elev_data_counter[0]-1]
-#        for jjj in range(0,9):
-#            val = lastValue0 + ( gems_elev_data[0][gems_elev_data_counter[0]-1] - lastValue0 ) * (jjj/10.0)
-#            plt.scatter(iii-1+jjj/10.0, val ,c='k',s=3)
-#        if last_case == 0:
-#            plt.scatter(iii, gems_elev_data[0][gems_elev_data_counter[0]-1],c='b')
-#        else: 
-#            plt.scatter(iii, gems_elev_data[0][gems_elev_data_counter[0]-1],c='r',s=80, marker='x')
-#          
-#        plt.figure(2)
-#        for jjj in range(0,9):
-#            val = lastValue1 + ( gems_elev_data[1][gems_elev_data_counter[1]-1] - lastValue1 ) * (jjj/10.0)
-#            plt.scatter(iii-1+jjj/10.0, val ,c='k',s=3)        
-#        if last_case == 0:
-#            plt.scatter(iii, gems_elev_data[1][gems_elev_data_counter[1]-1],c='b')
-#        else: 
-#            plt.scatter(iii, gems_elev_data[1][gems_elev_data_counter[1]-1],c='r',s=80, marker='x')
-#
-#
-#        plt.figure(1)
-#        plt.axis([iii - 30, iii + 10, 0, 180])            
-#        plt.draw()    
-#        plt.figure(2)
-#        plt.axis([iii - 30, iii + 10, 0, 180])            
-#        plt.draw()    
-#
-#
-#        iii += 1   
-#        if gems_elev_data[0][gems_elev_data_counter[0]-1] != lastValue0:
-#            lastValue0 = gems_elev_data[0][gems_elev_data_counter[0]-1]
-#        if gems_elev_data[1][gems_elev_data_counter[1]-1] != lastValue1:
-#            lastValue1 = gems_elev_data[1][gems_elev_data_counter[1]-1]                                 
-#        plt.pause(0.00001)        
-         
-
+       
 ser = serial.Serial('COM10',baudrate=9600)
 ser.timeout = 0.01
-ax = None
+session_name = str(time.time())
+
+gem_1_fd = None
+gem_2_fd = None
+events_fd = None
 
 if __name__ == '__main__':
+
+    
+    os.mkdir(session_name)
+    gem_1_fd = open(session_name+"/gem1.txt",'w')    
+    gem_2_fd = open(session_name+"/gem2.txt",'w')
+    events_fd = open(session_name+"/events.txt",'w')
+
+    mvw = myVideoWriter()
+    mvw.init(0,session_name+"/video.avi")
+    mvw.startCapture()   
 
     gemMgr = GemManager()
     
@@ -409,9 +309,6 @@ if __name__ == '__main__':
     
     start_new_thread(main_thread_loop,())
     start_new_thread(figure_thread_loop,())
-    
-#    mvw = myVideoWriter()
-#    mvw.init(0,'test.avi')
-#    mvw.startCapture()   
 
-    mainloop()
+    while True:
+        time.sleep(0.01)
