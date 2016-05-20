@@ -1,26 +1,22 @@
-from gemsdk import *
-from Tkinter import *
-import time
-from thread import start_new_thread
-from threading import Lock
-import numpy as np
-from matplotlib import mlab
+#misc
+import os
 import serial
 import struct
+import time
+#Threads
+from thread import start_new_thread
+from threading import Lock
+#Math and plots
+import numpy as np
+from matplotlib import mlab
 import matplotlib.pyplot as plt
+#Our includes
+from gemsdk import *
 from Quaternion2 import Quaternion2
 from myVideoWriter import myVideoWriter
-import os
+from platform_communication_handler import platformCommunicationHandler as pch
 
-rad2deg = (180/3.141592653589793)
-deg2rad = (3.141592653589793/180)
 workingFlag = 0
-
-def write2arduino(ser):
-    ser.write(struct.pack('B'*8,255,254,100,1,1,150,150,0))
-    ser.write(struct.pack('B'*8,255,254,100,1,1,150,150,0))
-    ser.write(struct.pack('B'*8,255,254,100,1,1,150,150,0))
-    ser.flush()
 
 def get_elevation(quat):
     x, y, z = np.eye(3)
@@ -140,9 +136,7 @@ def main_thread_loop():
         time.sleep(0.01)
         
         if  time.time() - led_tic > 10:
-            ser.write(struct.pack('B'*8,255,254,100,1,6,150,150,0))
-            ser.write(struct.pack('B'*8,255,254,100,1,6,150,150,0))
-            ser.write(struct.pack('B'*8,255,254,100,1,6,150,150,0))
+            platform_controller.turn_leds_on()
             led_tic = time.time()
             print >> events_fd,time.time(),"sent LED"
             events_fd.flush()
@@ -186,7 +180,7 @@ def main_thread_loop():
             if last_case != 1:    
                 print >> events_fd,time.time(), 'CASE 1 ::: hand 1 down,hand 2 on the floor'
                 events_fd.flush()
-                write2arduino(ser)
+                platform_controller.move_forward()
                 workingFlag = 1
             else:
                 workingFlag = 0
@@ -195,7 +189,7 @@ def main_thread_loop():
             if last_case != 2:            
                 print >> events_fd,time.time(), 'CASE 2 ::: hand 2 down,hand 1 on the floor'
                 events_fd.flush()
-                write2arduino(ser)  
+                platform_controller.move_forward()  
                 workingFlag = 2
             else:
                 workingFlag = 0                
@@ -204,7 +198,7 @@ def main_thread_loop():
             if last_case != 3:          
                 print >> events_fd,time.time(), 'CASE 3 ::: hand 1 up and hand 2 floor'
                 events_fd.flush()
-                write2arduino(ser) 
+                platform_controller.move_forward() 
                 workingFlag = 3
             else:
                 workingFlag = 0                
@@ -213,7 +207,7 @@ def main_thread_loop():
             if last_case != 4:          
                 print >> events_fd,time.time(), 'CASE 4 ::: hand 2 up and hand 1 floor'
                 events_fd.flush()
-                write2arduino(ser) 
+                platform_controller.move_forward() 
                 workingFlag = 4
             else:
                 workingFlag = 0                
@@ -275,9 +269,10 @@ def figure_thread_loop():
         plt.draw() 
             
         plt.pause(0.00001)        
-       
-ser = serial.Serial('COM10',baudrate=9600)
-ser.timeout = 0.01
+
+      
+platform_controller = pch('COM10')
+
 session_name = str(time.time())
 
 gem_1_fd = None
