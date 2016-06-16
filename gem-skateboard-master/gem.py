@@ -106,10 +106,10 @@ HAND_UNKWON = 0
 hands_trend = [0,0] # 1 - up, -1 - down, 0 - unkwon
 
 EXPIRED_CONNECTION_TIMEOUT = 0.5
-VECTOR_SIZE = 50
+VECTOR_SIZE = 20
 MAX_VECTOR_SIZE = 100
-ELEVATION_THRESHOLD = 50.0
-ELEVATION_TREND_PRECENT = 0.9
+ELEVATION_THRESHOLD = 20.0
+ELEVATION_TREND_PRECENT = 0.8
 HAND_ON_FLOOR = 110
 
 def CheckElevation(vec):
@@ -271,7 +271,7 @@ def figure_thread_loop():
         plt.pause(0.00001)        
 
       
-platform_controller = pch('COM10')
+platform_controller = pch('COM4')
 
 session_name = str(time.time())
 
@@ -293,7 +293,7 @@ if __name__ == '__main__':
 
     gemMgr = GemManager()
     
-    gems[0] = gemMgr.Gems.values()[2]
+    gems[0] = gemMgr.Gems.values()[0]
     res = gems[0].setCallbacks(onStatusUpdate,onCombinedData)
     gems[0].connect()
     
