@@ -1,0 +1,2 @@
+- run the gem_py_simulation, check if we see the faults mentioned by zvika
+- handle the spikes (first/last/middle) 
