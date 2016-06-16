@@ -131,6 +131,12 @@ def main_thread_loop():
     global workingFlag
     global last_case
     led_tic = time.time()
+    dup_gem1_vec = []
+    dup_gem2_vec = []
+    dup_gem1_counter = []
+    dup_gem2_counter = []
+    dup_gem1_last_timestamp = 0
+    dup_gem2_last_timestamp = 0
     
     while True:
         time.sleep(0.01)
@@ -140,77 +146,75 @@ def main_thread_loop():
             led_tic = time.time()
             print >> events_fd,time.time(),"sent LED"
             events_fd.flush()
-        if gems_elev_data_counter[0] > MAX_VECTOR_SIZE:
-            gems_data_lock[0].acquire()
-            try:
+        
+        gems_data_lock[0].acquire()
+        try:
+            if gems_elev_data_counter[0] > MAX_VECTOR_SIZE:
                 gems_elev_data[0][0:VECTOR_SIZE] = gems_elev_data[0][VECTOR_SIZE:MAX_VECTOR_SIZE]
                 gems_elev_data_time[0][0:VECTOR_SIZE] = gems_elev_data_time[0][VECTOR_SIZE:MAX_VECTOR_SIZE]                
                 gems_elev_data_counter[0] = VECTOR_SIZE
-            finally:
-                gems_data_lock[0].release()
+            dup_gem1_vec = gems_elev_data[0][:]
+            dup_gem1_counter = gems_elev_data_counter[0]
+            dup_gem1_last_timestamp = gems_last_data_timestamps[0]
+        finally:
+            gems_data_lock[0].release()
         
-        if gems_elev_data_counter[1] > MAX_VECTOR_SIZE:
-            gems_data_lock[1].acquire()
-            try:
+        gems_data_lock[1].acquire()
+        try:
+            if gems_elev_data_counter[1] > MAX_VECTOR_SIZE:
                 gems_elev_data[1][0:VECTOR_SIZE] = gems_elev_data[1][VECTOR_SIZE:MAX_VECTOR_SIZE]
                 gems_elev_data_time[1][0:VECTOR_SIZE] = gems_elev_data_time[1][VECTOR_SIZE:MAX_VECTOR_SIZE]
                 gems_elev_data_counter[1] = VECTOR_SIZE
-            finally:
-                gems_data_lock[1].release()
+            dup_gem2_vec = gems_elev_data[1][:]
+            dup_gem2_counter = gems_elev_data_counter[1]
+            dup_gem2_last_timestamp = gems_last_data_timestamps[0]
+        finally:
+            gems_data_lock[1].release()
 
 
         if gems[0] is None or gems[1] is None:
             continue
 
-        if (time.time() - gems_last_data_timestamps[0] >  EXPIRED_CONNECTION_TIMEOUT ) or (time.time() - gems_last_data_timestamps[1] > EXPIRED_CONNECTION_TIMEOUT):
+        if (time.time() - dup_gem1_last_timestamp >  EXPIRED_CONNECTION_TIMEOUT ) or (time.time() - dup_gem2_last_timestamp > EXPIRED_CONNECTION_TIMEOUT):
            continue
        
-        if gems_elev_data_counter[0] < VECTOR_SIZE or gems_elev_data_counter[1] < VECTOR_SIZE:
+        if dup_gem1_counter < VECTOR_SIZE or dup_gem2_counter < VECTOR_SIZE:
             continue
         
         #print "gems_elev_data_counter[0]-VECTOR_SIZE+1",gems_elev_data_counter[0]-VECTOR_SIZE,gems_elev_data_counter[0]
-        hand1_elevation_deg,hand_trend1 = CheckElevation(gems_elev_data[0][gems_elev_data_counter[0]-VECTOR_SIZE+1:gems_elev_data_counter[0]-1])
+        hand1_elevation_deg,hand_trend1 = CheckElevation(dup_gem1_vec[dup_gem1_counter-VECTOR_SIZE+1:dup_gem1_counter-1])
         hands_trend[0] = hand_trend1
         
-        hand2_elevation_deg,hand_trend2 = CheckElevation(gems_elev_data[1][gems_elev_data_counter[1]-VECTOR_SIZE+1:gems_elev_data_counter[1]-1])
+        hand2_elevation_deg,hand_trend2 = CheckElevation(dup_gem2_vec[dup_gem2_counter-VECTOR_SIZE+1:dup_gem2_counter-1])
         hands_trend[1] = hand_trend2
 
 #        print last_case,hands_trend, gems_elev_data[0][gems_elev_data_counter[0]-1],gems_elev_data[1][gems_elev_data_counter[1]-1]
-        if hands_trend[0] == HAND_DOWN and hands_trend[1] == HAND_UNKWON and gems_elev_data[1][gems_elev_data_counter[1]-1] > HAND_ON_FLOOR:
+        if hands_trend[0] == HAND_DOWN and hands_trend[1] == HAND_UNKWON and dup_gem2_vec[dup_gem2_counter-1] > HAND_ON_FLOOR:
             if last_case != 1:    
                 print >> events_fd,time.time(), 'CASE 1 ::: hand 1 down,hand 2 on the floor'
                 events_fd.flush()
                 platform_controller.move_forward()
-                workingFlag = 1
-            else:
-                workingFlag = 0
             last_case = 1
-        elif hands_trend[1] == HAND_DOWN and hands_trend[0] == HAND_UNKWON and gems_elev_data[0][gems_elev_data_counter[0]-1] > HAND_ON_FLOOR:
+            
+        elif hands_trend[1] == HAND_DOWN and hands_trend[0] == HAND_UNKWON and dup_gem1_vec[dup_gem1_counter-1] > HAND_ON_FLOOR:
             if last_case != 2:            
                 print >> events_fd,time.time(), 'CASE 2 ::: hand 2 down,hand 1 on the floor'
                 events_fd.flush()
                 platform_controller.move_forward()  
-                workingFlag = 2
-            else:
-                workingFlag = 0                
             last_case = 2
-        elif hands_trend[0] == HAND_UP and hands_trend[1] == HAND_UNKWON and gems_elev_data[1][gems_elev_data_counter[1]-1] > HAND_ON_FLOOR:
+            
+        elif hands_trend[0] == HAND_UP and hands_trend[1] == HAND_UNKWON and dup_gem2_vec[dup_gem2_counter-1] > HAND_ON_FLOOR:
             if last_case != 3:          
                 print >> events_fd,time.time(), 'CASE 3 ::: hand 1 up and hand 2 floor'
                 events_fd.flush()
                 platform_controller.move_forward() 
-                workingFlag = 3
-            else:
-                workingFlag = 0                
             last_case = 3
-        elif hands_trend[1] == HAND_UP and hands_trend[0] == HAND_UNKWON and gems_elev_data[0][gems_elev_data_counter[0]-1] > HAND_ON_FLOOR:
+            
+        elif hands_trend[1] == HAND_UP and hands_trend[0] == HAND_UNKWON and dup_gem1_vec[dup_gem1_counter-1] > HAND_ON_FLOOR:
             if last_case != 4:          
                 print >> events_fd,time.time(), 'CASE 4 ::: hand 2 up and hand 1 floor'
                 events_fd.flush()
                 platform_controller.move_forward() 
-                workingFlag = 4
-            else:
-                workingFlag = 0                
             last_case = 4            
         else:
             last_case = 0
