@@ -9,7 +9,7 @@
 #define LEDPIN 4
 
 #define MSGLEN 5
-#define DT2STOP 200
+#define DT2STOP 400
 
 
 #include <SPI.h>
@@ -42,7 +42,7 @@ volatile long encRight = 0;
 // ————————————————————————— Setup
 void setup() {
   if (DEBUG) Serial.begin(9600);
-  if (DEBUG) stepPower = 10;
+  if (DEBUG) stepPower = 5;
    pinMode(LEDPIN, OUTPUT);
    digitalWrite(LEDPIN, HIGH);
   // Setup motors
@@ -278,7 +278,9 @@ void switchData1(byte data1, boolean sw) {
       motor_stop();
       break;
     case 6: // All LEDs one Color
-      // colorWipe(strip.Color(data[2], data[3], data[4]), 0);
+         digitalWrite(LEDPIN, HIGH);
+         delay(100);
+    //   colorWipe(strip.Color(data[2], data[3], data[4]), 0);
       break;
     case 7: // All LEDs one Color
       //colorWipe(strip.Color(data[2], data[3], data[4]), 100);
