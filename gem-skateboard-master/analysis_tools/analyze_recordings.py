@@ -17,7 +17,7 @@ from matplotlib import mlab
 
 time_tuple = (2016, 6 , 4, 17, 2 , 41, 0, 0, 0)
 
-mainDir = '.\\Recordings\\sensors_logs\\'
+mainDir = '.\\Recordings\\'
 
 time1_arr = []
 time2_arr = []

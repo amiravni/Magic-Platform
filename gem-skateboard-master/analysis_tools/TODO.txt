@@ -1,2 +1,4 @@
 - run the gem_py_simulation, check if we see the faults mentioned by zvika
-- handle the spikes (first/last/middle) 
+- check cube with quaternion to check shoulder back
+- handle the spikes (first/last/middle) - linear polyfit  
+- moving hand above 160
