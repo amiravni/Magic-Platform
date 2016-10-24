@@ -251,8 +251,8 @@ def figure_thread_loop():
     while True:
         if gems_elev_data_counter[0] < VECTOR_SIZE or gems_elev_data_counter[1] < VECTOR_SIZE:
             continue
-        print "Ready!"
-        return
+#        print "Ready!"
+#        return
         plt.figure(2)
         plt.clf()
         try: 
