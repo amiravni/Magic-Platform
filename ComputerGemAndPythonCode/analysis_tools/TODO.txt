@@ -1,0 +1,4 @@
+V - run the gem_py_simulation, check if we see the faults mentioned by zvika
+V - check cube with quaternion to check shoulder back
+V - handle the spikes (first/last/middle) - linear polyfit  
+V - moving hand above 160

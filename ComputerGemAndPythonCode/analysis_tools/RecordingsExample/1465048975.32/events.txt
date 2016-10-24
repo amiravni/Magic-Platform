@@ -1,0 +1,115 @@
+1465048985.36 sent LED
+1465048992.85 CASE 3 ::: hand 1 up and hand 2 floor
+1465048993.88 CASE 1 ::: hand 1 down,hand 2 on the floor
+1465048993.95 CASE 1 ::: hand 1 down,hand 2 on the floor
+1465048995.38 sent LED
+1465049005.4 sent LED
+1465049013.1 CASE 3 ::: hand 1 up and hand 2 floor
+1465049014.87 CASE 4 ::: hand 2 up and hand 1 floor
+1465049015.43 sent LED
+1465049017.48 CASE 2 ::: hand 2 down,hand 1 on the floor
+1465049020.03 CASE 3 ::: hand 1 up and hand 2 floor
+1465049025.45 sent LED
+1465049026.72 CASE 4 ::: hand 2 up and hand 1 floor
+1465049027.8 CASE 2 ::: hand 2 down,hand 1 on the floor
+1465049035.48 sent LED
+1465049045.51 sent LED
+1465049055.55 sent LED
+1465049059.87 CASE 4 ::: hand 2 up and hand 1 floor
+1465049060.4 CASE 2 ::: hand 2 down,hand 1 on the floor
+1465049060.74 CASE 4 ::: hand 2 up and hand 1 floor
+1465049064.99 CASE 4 ::: hand 2 up and hand 1 floor
+1465049065.56 sent LED
+1465049075.58 sent LED
+1465049085.6 sent LED
+1465049094.03 CASE 4 ::: hand 2 up and hand 1 floor
+1465049094.22 CASE 2 ::: hand 2 down,hand 1 on the floor
+1465049094.78 CASE 2 ::: hand 2 down,hand 1 on the floor
+1465049095.62 sent LED
+1465049099.96 CASE 4 ::: hand 2 up and hand 1 floor
+1465049100.44 CASE 2 ::: hand 2 down,hand 1 on the floor
+1465049101.5 CASE 4 ::: hand 2 up and hand 1 floor
+1465049101.9 CASE 2 ::: hand 2 down,hand 1 on the floor
+1465049101.98 CASE 3 ::: hand 1 up and hand 2 floor
+1465049103.31 CASE 2 ::: hand 2 down,hand 1 on the floor
+1465049104.34 CASE 4 ::: hand 2 up and hand 1 floor
+1465049105.14 CASE 4 ::: hand 2 up and hand 1 floor
+1465049105.24 CASE 1 ::: hand 1 down,hand 2 on the floor
+1465049105.27 CASE 2 ::: hand 2 down,hand 1 on the floor
+1465049105.64 sent LED
+1465049105.75 CASE 2 ::: hand 2 down,hand 1 on the floor
+1465049106.43 CASE 1 ::: hand 1 down,hand 2 on the floor
+1465049115.66 sent LED
+1465049125.67 sent LED
+1465049130.86 CASE 4 ::: hand 2 up and hand 1 floor
+1465049132.14 CASE 4 ::: hand 2 up and hand 1 floor
+1465049135.69 sent LED
+1465049138.52 CASE 2 ::: hand 2 down,hand 1 on the floor
+1465049140.21 CASE 3 ::: hand 1 up and hand 2 floor
+1465049140.27 CASE 2 ::: hand 2 down,hand 1 on the floor
+1465049140.53 CASE 2 ::: hand 2 down,hand 1 on the floor
+1465049140.98 CASE 2 ::: hand 2 down,hand 1 on the floor
+1465049145.71 sent LED
+1465049155.73 sent LED
+1465049164.1 CASE 1 ::: hand 1 down,hand 2 on the floor
+1465049165.76 sent LED
+1465049172.89 CASE 2 ::: hand 2 down,hand 1 on the floor
+1465049173.8 CASE 3 ::: hand 1 up and hand 2 floor
+1465049175.79 sent LED
+1465049185.82 sent LED
+1465049195.86 sent LED
+1465049205.88 sent LED
+1465049215.9 sent LED
+1465049220.76 CASE 3 ::: hand 1 up and hand 2 floor
+1465049223.58 CASE 1 ::: hand 1 down,hand 2 on the floor
+1465049224.13 CASE 4 ::: hand 2 up and hand 1 floor
+1465049225.92 sent LED
+1465049227.23 CASE 2 ::: hand 2 down,hand 1 on the floor
+1465049227.86 CASE 2 ::: hand 2 down,hand 1 on the floor
+1465049235.94 sent LED
+1465049245.96 sent LED
+1465049255.98 sent LED
+1465049260.79 CASE 4 ::: hand 2 up and hand 1 floor
+1465049266.0 sent LED
+1465049268.89 CASE 4 ::: hand 2 up and hand 1 floor
+1465049269.34 CASE 2 ::: hand 2 down,hand 1 on the floor
+1465049274.06 CASE 3 ::: hand 1 up and hand 2 floor
+1465049276.02 sent LED
+1465049280.67 CASE 4 ::: hand 2 up and hand 1 floor
+1465049283.15 CASE 4 ::: hand 2 up and hand 1 floor
+1465049286.04 sent LED
+1465049288.16 CASE 3 ::: hand 1 up and hand 2 floor
+1465049296.06 sent LED
+1465049296.88 CASE 4 ::: hand 2 up and hand 1 floor
+1465049301.95 CASE 2 ::: hand 2 down,hand 1 on the floor
+1465049302.73 CASE 4 ::: hand 2 up and hand 1 floor
+1465049303.15 CASE 4 ::: hand 2 up and hand 1 floor
+1465049303.34 CASE 2 ::: hand 2 down,hand 1 on the floor
+1465049303.79 CASE 2 ::: hand 2 down,hand 1 on the floor
+1465049306.09 sent LED
+1465049306.21 CASE 3 ::: hand 1 up and hand 2 floor
+1465049308.02 CASE 3 ::: hand 1 up and hand 2 floor
+1465049308.54 CASE 1 ::: hand 1 down,hand 2 on the floor
+1465049308.75 CASE 4 ::: hand 2 up and hand 1 floor
+1465049309.27 CASE 4 ::: hand 2 up and hand 1 floor
+1465049316.12 sent LED
+1465049318.43 CASE 2 ::: hand 2 down,hand 1 on the floor
+1465049326.14 sent LED
+1465049330.61 CASE 1 ::: hand 1 down,hand 2 on the floor
+1465049336.17 sent LED
+1465049346.19 sent LED
+1465049356.22 sent LED
+1465049362.55 CASE 3 ::: hand 1 up and hand 2 floor
+1465049363.26 CASE 1 ::: hand 1 down,hand 2 on the floor
+1465049366.25 sent LED
+1465049369.06 CASE 2 ::: hand 2 down,hand 1 on the floor
+1465049376.28 sent LED
+1465049386.3 sent LED
+1465049386.37 CASE 4 ::: hand 2 up and hand 1 floor
+1465049396.32 sent LED
+1465049402.36 CASE 1 ::: hand 1 down,hand 2 on the floor
+1465049403.82 CASE 2 ::: hand 2 down,hand 1 on the floor
+1465049404.67 CASE 3 ::: hand 1 up and hand 2 floor
+1465049406.34 sent LED
+1465049416.35 sent LED
+1465049426.37 sent LED
