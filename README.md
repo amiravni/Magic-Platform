@@ -1,7 +1,7 @@
 # Magic-Platform
 A platform which is moved by the hand movements.
 
-The entire documentation at www.whatimade.today
+The entire documentation can be found at : http://www.whatimade.today/the-magic-platform-diy-assisted-device-for-crawling-for-a-child-with-developmental-disabilities-2/
 
 ComputerArduinoCode	 - Code for the Arduino connected to the compter
 
